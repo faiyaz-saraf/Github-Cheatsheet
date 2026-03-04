@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e10;
+    --surface: #18181c;
+    --border: #2a2a30;
+    --accent: #f7a033;
+    --accent2: #5de4c7;
+    --accent3: #f97583;
+    --text: #e8e8ee;
+    --muted: #7a7a8a;
+    --code-bg: #111115;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 40px 24px 80px;
+  }
+
+  header {
+    max-width: 1100px;
+    margin: 0 auto 48px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+
+  header h1 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+  }
+
+  header p {
+    color: var(--muted);
+    margin-top: 6px;
+    font-size: 13px;
+  }
+
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-header .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .card-header h2 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .card-body {
+    padding: 4px 0;
+  }
+
+  .cmd {
+    padding: 10px 16px;
+    border-bottom: 1px solid #1e1e24;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .cmd:last-child { border-bottom: none; }
+
+  .cmd:hover {
+    background: #1e1e26;
+  }
+
+  .cmd code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent2);
+    background: var(--code-bg);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    word-break: break-all;
+  }
+
+  .cmd code .flag {
+    color: var(--accent3);
+  }
+
+  .cmd code .arg {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .cmd .desc {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 2px 0 0 2px;
+  }
+
+  .wide {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 700px) {
+    .wide { grid-column: span 1; }
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .badge-git { background: #2a1f0a; color: var(--accent); border: 1px solid #4a3a15; }
+  .badge-gh  { background: #0d1f2d; color: var(--accent2); border: 1px solid #1a3a4a; }
+
+  .section-label {
+    max-width: 1100px;
+    margin: 40px auto 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-left: 2px solid var(--accent);
+    padding-left: 10px;
+  }
+
+  .tip-box {
+    background: #191a12;
+    border: 1px solid #3a3a1a;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #c8c0a0;
+    line-height: 1.6;
+  }
+
+  .tip-box strong {
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .tip-box code {
+    font-family: 'IBM Plex Mono', monospace;
+    background: #2a2a18;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--accent2);
+    font-size: 12px;
+  }
+
+  .flow-diagram {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .flow-node {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 16px;
+    text-align: center;
+    min-width: 110px;
+  }
+
+  .flow-node .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .flow-node .sublabel {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .flow-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 8px;
+  }
+
+  .flow-arrow .cmd-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    white-space: nowrap;
+    margin-bottom: 2px;
+  }
+
+  .flow-arrow .arrow {
+    font-size: 18px;
+    color: var(--border);
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Git &amp; GitHub Cheat Sheet</h1>
+  <p>Commands, workflows, and explanations for everyday use.</p>
+</header>
+
+<!-- WORKFLOW DIAGRAM -->
+<div class="section-label">The Core Workflow</div>
+<div class="flow-diagram" style="margin-bottom:0">
+  <div class="flow">
+    <div class="flow-node">
+      <div class="label">Working Dir</div>
+      <div class="sublabel">Your files</div>
+    </div>
+    <div class="flow-arrow">
+      <div class="cmd-label">git add</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="flow-node">
+      <div class="label">Staging Area</div>
+      <div class="sublabel">Ready to commit</div>
+    </div>
+    <div class="flow-arrow">
+      <div class="cmd-label">git commit</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="flow-node">
+      <div class="label">Local Repo</div>
+      <div class="sublabel">.git folder</div>
+    </div>
+    <div class="flow-arrow">
+      <div class="cmd-label">git push</div>
+      <div class="arrow">→</div>
+    </div>
+    <div class="flow-node">
+      <div class="label">Remote</div>
+      <div class="sublabel">GitHub</div>
+    </div>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div class="section-label">Setup &amp; Config</div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>First-Time Setup</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git config <span class="flag">--global</span> user.name <span class="arg">"Your Name"</span></code>
+        <div class="desc">Set the name attached to all your commits.</div>
+      </div>
+      <div class="cmd">
+        <code>git config <span class="flag">--global</span> user.email <span class="arg">"you@email.com"</span></code>
+        <div class="desc">Set the email attached to all your commits.</div>
+      </div>
+      <div class="cmd">
+        <code>git config <span class="flag">--global</span> core.editor <span class="arg">code</span></code>
+        <div class="desc">Set VS Code as the default editor. Use <code>vim</code>, <code>nano</code>, etc. as needed.</div>
+      </div>
+      <div class="cmd">
+        <code>git config <span class="flag">--list</span></code>
+        <div class="desc">View all current config settings.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Starting a Repo</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git init</code>
+        <div class="desc">Turn the current folder into a Git repo. Creates a hidden <code>.git</code> directory.</div>
+      </div>
+      <div class="cmd">
+        <code>git clone <span class="arg">&lt;url&gt;</span></code>
+        <div class="desc">Copy a remote repo to your machine. Downloads all history and files.</div>
+      </div>
+      <div class="cmd">
+        <code>git clone <span class="arg">&lt;url&gt;</span> <span class="arg">folder-name</span></code>
+        <div class="desc">Clone into a specific folder name instead of the default repo name.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- DAILY USE -->
+<div class="section-label">Daily Commands</div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Staging &amp; Committing</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git status</code>
+        <div class="desc">Show which files are modified, staged, or untracked. Run this constantly.</div>
+      </div>
+      <div class="cmd">
+        <code>git add <span class="arg">&lt;file&gt;</span></code>
+        <div class="desc">Stage a specific file for the next commit.</div>
+      </div>
+      <div class="cmd">
+        <code>git add .</code>
+        <div class="desc">Stage all changes in the current directory and below.</div>
+      </div>
+      <div class="cmd">
+        <code>git add <span class="flag">-p</span></code>
+        <div class="desc">Interactively choose which changes to stage, chunk by chunk. Great for clean commits.</div>
+      </div>
+      <div class="cmd">
+        <code>git commit <span class="flag">-m</span> <span class="arg">"message"</span></code>
+        <div class="desc">Save staged changes to your local history with a message.</div>
+      </div>
+      <div class="cmd">
+        <code>git commit <span class="flag">-am</span> <span class="arg">"message"</span></code>
+        <div class="desc">Stage all tracked file changes and commit in one step. Skips <code>git add</code> for modified files. Does not include new untracked files.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Inspecting Changes</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git diff</code>
+        <div class="desc">Show unstaged changes line by line.</div>
+      </div>
+      <div class="cmd">
+        <code>git diff <span class="flag">--staged</span></code>
+        <div class="desc">Show staged changes that are ready to commit.</div>
+      </div>
+      <div class="cmd">
+        <code>git log</code>
+        <div class="desc">Show full commit history with author, date, and message.</div>
+      </div>
+      <div class="cmd">
+        <code>git log <span class="flag">--oneline --graph</span></code>
+        <div class="desc">Compact history view with a visual branch graph. Very useful.</div>
+      </div>
+      <div class="cmd">
+        <code>git show <span class="arg">&lt;commit&gt;</span></code>
+        <div class="desc">Show the diff and metadata for a specific commit.</div>
+      </div>
+      <div class="cmd">
+        <code>git blame <span class="arg">&lt;file&gt;</span></code>
+        <div class="desc">Show which commit last changed each line of a file, and who did it.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Undoing Things</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git restore <span class="arg">&lt;file&gt;</span></code>
+        <div class="desc">Discard unstaged changes in a file. Resets it to the last committed version.</div>
+      </div>
+      <div class="cmd">
+        <code>git restore <span class="flag">--staged</span> <span class="arg">&lt;file&gt;</span></code>
+        <div class="desc">Unstage a file without losing the changes in your working directory.</div>
+      </div>
+      <div class="cmd">
+        <code>git commit <span class="flag">--amend</span></code>
+        <div class="desc">Modify the most recent commit. Change the message or add forgotten files. Only use before pushing.</div>
+      </div>
+      <div class="cmd">
+        <code>git revert <span class="arg">&lt;commit&gt;</span></code>
+        <div class="desc">Create a new commit that undoes a previous one. Safe to use on shared branches.</div>
+      </div>
+      <div class="cmd">
+        <code>git reset <span class="flag">--soft</span> <span class="arg">HEAD~1</span></code>
+        <div class="desc">Undo the last commit but keep changes staged. Good for re-doing a commit.</div>
+      </div>
+      <div class="cmd">
+        <code>git reset <span class="flag">--hard</span> <span class="arg">HEAD~1</span></code>
+        <div class="desc">Undo the last commit and discard all changes permanently. Cannot be recovered easily.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot" style="background:var(--accent3)"></div><h2>Stashing</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git stash</code>
+        <div class="desc">Save your uncommitted changes to a temporary stack and clean your working directory. Useful when you need to switch branches without committing.</div>
+      </div>
+      <div class="cmd">
+        <code>git stash pop</code>
+        <div class="desc">Restore the most recently stashed changes and remove them from the stash stack.</div>
+      </div>
+      <div class="cmd">
+        <code>git stash list</code>
+        <div class="desc">View all stashed entries with their index numbers.</div>
+      </div>
+      <div class="cmd">
+        <code>git stash apply <span class="arg">stash@{2}</span></code>
+        <div class="desc">Apply a specific stash by index without removing it from the stack.</div>
+      </div>
+      <div class="cmd">
+        <code>git stash drop <span class="arg">stash@{0}</span></code>
+        <div class="desc">Delete a specific stash entry.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BRANCHES -->
+<div class="section-label">Branches &amp; Merging</div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header"><div class="dot" style="background:var(--accent2)"></div><h2>Branches</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git branch</code>
+        <div class="desc">List all local branches. An asterisk marks your current branch.</div>
+      </div>
+      <div class="cmd">
+        <code>git branch <span class="arg">&lt;name&gt;</span></code>
+        <div class="desc">Create a new branch at the current commit. Does not switch to it.</div>
+      </div>
+      <div class="cmd">
+        <code>git switch <span class="arg">&lt;name&gt;</span></code>
+        <div class="desc">Switch to an existing branch. Preferred over older <code>git checkout</code>.</div>
+      </div>
+      <div class="cmd">
+        <code>git switch <span class="flag">-c</span> <span class="arg">&lt;name&gt;</span></code>
+        <div class="desc">Create a new branch and switch to it in one command.</div>
+      </div>
+      <div class="cmd">
+        <code>git branch <span class="flag">-d</span> <span class="arg">&lt;name&gt;</span></code>
+        <div class="desc">Delete a branch. Git will warn you if it has unmerged commits. Use <code>-D</code> to force.</div>
+      </div>
+      <div class="cmd">
+        <code>git branch <span class="flag">-m</span> <span class="arg">old-name new-name</span></code>
+        <div class="desc">Rename a branch.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot" style="background:var(--accent2)"></div><h2>Merging &amp; Rebasing</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git merge <span class="arg">&lt;branch&gt;</span></code>
+        <div class="desc">Merge the specified branch into your current branch. Creates a merge commit if histories diverge.</div>
+      </div>
+      <div class="cmd">
+        <code>git merge <span class="flag">--no-ff</span> <span class="arg">&lt;branch&gt;</span></code>
+        <div class="desc">Force a merge commit even when a fast-forward is possible. Preserves branch history visually.</div>
+      </div>
+      <div class="cmd">
+        <code>git rebase <span class="arg">&lt;branch&gt;</span></code>
+        <div class="desc">Replay your commits on top of another branch. Produces a linear, cleaner history. Do not rebase commits already pushed to a shared branch.</div>
+      </div>
+      <div class="cmd">
+        <code>git rebase <span class="flag">-i</span> <span class="arg">HEAD~3</span></code>
+        <div class="desc">Interactive rebase. Edit, squash, reorder, or drop the last 3 commits before pushing.</div>
+      </div>
+      <div class="cmd">
+        <code>git cherry-pick <span class="arg">&lt;commit&gt;</span></code>
+        <div class="desc">Apply a specific commit from another branch onto the current branch.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot" style="background:var(--accent3)"></div><h2>Resolving Conflicts</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git status</code>
+        <div class="desc">After a merge conflict, this shows which files need resolution. Conflicted files are marked.</div>
+      </div>
+      <div class="cmd">
+        <code># Edit the conflicted file</code>
+        <div class="desc">Open the file and look for <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> markers. Keep what you want and remove the markers.</div>
+      </div>
+      <div class="cmd">
+        <code>git add <span class="arg">&lt;resolved-file&gt;</span></code>
+        <div class="desc">Mark a conflict as resolved by staging the file.</div>
+      </div>
+      <div class="cmd">
+        <code>git merge <span class="flag">--continue</span></code>
+        <div class="desc">Complete the merge after resolving all conflicts.</div>
+      </div>
+      <div class="cmd">
+        <code>git merge <span class="flag">--abort</span></code>
+        <div class="desc">Cancel the merge entirely and return to the pre-merge state.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- REMOTE -->
+<div class="section-label">Working with Remotes</div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Remotes</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git remote <span class="flag">-v</span></code>
+        <div class="desc">List all configured remotes with their URLs. <code>origin</code> is the default remote name.</div>
+      </div>
+      <div class="cmd">
+        <code>git remote add <span class="arg">origin &lt;url&gt;</span></code>
+        <div class="desc">Connect your local repo to a remote repo at the given URL.</div>
+      </div>
+      <div class="cmd">
+        <code>git remote rename <span class="arg">old new</span></code>
+        <div class="desc">Rename a remote.</div>
+      </div>
+      <div class="cmd">
+        <code>git remote remove <span class="arg">&lt;name&gt;</span></code>
+        <div class="desc">Remove a remote connection.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Push, Pull &amp; Fetch</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git push <span class="arg">origin &lt;branch&gt;</span></code>
+        <div class="desc">Upload your local branch commits to the remote.</div>
+      </div>
+      <div class="cmd">
+        <code>git push <span class="flag">-u</span> <span class="arg">origin &lt;branch&gt;</span></code>
+        <div class="desc">Push and set the upstream tracking branch. After this, just use <code>git push</code>.</div>
+      </div>
+      <div class="cmd">
+        <code>git push <span class="flag">--force-with-lease</span></code>
+        <div class="desc">Force push safely. Fails if the remote has commits you have not fetched. Safer than <code>--force</code>.</div>
+      </div>
+      <div class="cmd">
+        <code>git fetch</code>
+        <div class="desc">Download remote changes without merging them into your local branches. Safe to run anytime.</div>
+      </div>
+      <div class="cmd">
+        <code>git pull</code>
+        <div class="desc">Fetch and merge remote changes into your current branch. Equivalent to <code>fetch</code> plus <code>merge</code>.</div>
+      </div>
+      <div class="cmd">
+        <code>git pull <span class="flag">--rebase</span></code>
+        <div class="desc">Fetch remote changes and rebase your local commits on top. Keeps history linear.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- GITHUB -->
+<div class="section-label">GitHub Workflow</div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header"><div class="dot" style="background:var(--accent2)"></div><h2>Pull Requests</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code># 1. Create a feature branch</code>
+        <div class="desc">Always branch off <code>main</code>. Name it clearly: <code>feature/login-form</code>, <code>fix/nav-bug</code>.</div>
+      </div>
+      <div class="cmd">
+        <code># 2. Push the branch to GitHub</code>
+        <div class="desc">Use <code>git push -u origin &lt;branch&gt;</code>. GitHub will show a prompt to open a pull request.</div>
+      </div>
+      <div class="cmd">
+        <code># 3. Open a Pull Request</code>
+        <div class="desc">On GitHub, click "Compare &amp; pull request". Write a clear title and description of what changed and why.</div>
+      </div>
+      <div class="cmd">
+        <code># 4. Review and merge</code>
+        <div class="desc">Reviewers comment, request changes, or approve. Once approved, merge using Squash, Merge, or Rebase depending on your team's convention.</div>
+      </div>
+      <div class="cmd">
+        <code># 5. Delete the branch</code>
+        <div class="desc">After merging, delete the remote branch on GitHub. Then run <code>git branch -d &lt;branch&gt;</code> locally.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot" style="background:var(--accent2)"></div><h2>Forking Workflow</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code># 1. Fork the repo on GitHub</code>
+        <div class="desc">Click Fork to create your own copy of a repo under your account. Used for contributing to projects you do not own.</div>
+      </div>
+      <div class="cmd">
+        <code>git clone <span class="arg">&lt;your-fork-url&gt;</span></code>
+        <div class="desc">Clone your fork locally.</div>
+      </div>
+      <div class="cmd">
+        <code>git remote add upstream <span class="arg">&lt;original-url&gt;</span></code>
+        <div class="desc">Add the original repo as a second remote called <code>upstream</code>. This lets you pull in updates from the source project.</div>
+      </div>
+      <div class="cmd">
+        <code>git fetch upstream</code>
+        <div class="desc">Get new commits from the original project.</div>
+      </div>
+      <div class="cmd">
+        <code>git merge upstream/main</code>
+        <div class="desc">Bring your local <code>main</code> up to date with the original project's <code>main</code>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot" style="background:var(--accent2)"></div><h2>GitHub CLI (gh)</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>gh repo clone <span class="arg">user/repo</span></code>
+        <div class="desc">Clone a GitHub repo using the CLI. Handles SSH setup automatically.</div>
+      </div>
+      <div class="cmd">
+        <code>gh pr create</code>
+        <div class="desc">Open a pull request from your current branch via the terminal.</div>
+      </div>
+      <div class="cmd">
+        <code>gh pr list</code>
+        <div class="desc">List open pull requests for the current repo.</div>
+      </div>
+      <div class="cmd">
+        <code>gh pr checkout <span class="arg">&lt;number&gt;</span></code>
+        <div class="desc">Check out a pull request locally by its number. Useful for reviewing others' work.</div>
+      </div>
+      <div class="cmd">
+        <code>gh issue create</code>
+        <div class="desc">Create a new GitHub issue from the terminal.</div>
+      </div>
+      <div class="cmd">
+        <code>gh repo fork <span class="flag">--clone</span></code>
+        <div class="desc">Fork and clone a repo in one step.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot" style="background:var(--accent3)"></div><h2>.gitignore</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code># In .gitignore:</code>
+        <div class="desc">List file patterns that Git should never track. One pattern per line.</div>
+      </div>
+      <div class="cmd">
+        <code>node_modules/</code>
+        <div class="desc">Ignore an entire folder. The trailing slash is recommended for directories.</div>
+      </div>
+      <div class="cmd">
+        <code>*.log</code>
+        <div class="desc">Ignore all files with a <code>.log</code> extension using a wildcard.</div>
+      </div>
+      <div class="cmd">
+        <code>.env</code>
+        <div class="desc">Ignore specific files. Always ignore files with secrets like API keys.</div>
+      </div>
+      <div class="cmd">
+        <code>!important.log</code>
+        <div class="desc">The <code>!</code> prefix negates a pattern. This re-includes a previously ignored file.</div>
+      </div>
+      <div class="cmd">
+        <code>git rm <span class="flag">--cached</span> <span class="arg">&lt;file&gt;</span></code>
+        <div class="desc">Stop tracking a file that is already committed. Add it to <code>.gitignore</code> first, then run this.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADVANCED -->
+<div class="section-label">Advanced Commands</div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Tags &amp; Releases</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git tag <span class="arg">v1.0.0</span></code>
+        <div class="desc">Create a lightweight tag at the current commit. Used to mark release points.</div>
+      </div>
+      <div class="cmd">
+        <code>git tag <span class="flag">-a</span> <span class="arg">v1.0.0</span> <span class="flag">-m</span> <span class="arg">"Release"</span></code>
+        <div class="desc">Create an annotated tag with a message. Preferred for releases; stores extra metadata.</div>
+      </div>
+      <div class="cmd">
+        <code>git push origin <span class="flag">--tags</span></code>
+        <div class="desc">Push all local tags to the remote. Tags are not pushed automatically with <code>git push</code>.</div>
+      </div>
+      <div class="cmd">
+        <code>git tag <span class="flag">-d</span> <span class="arg">v1.0.0</span></code>
+        <div class="desc">Delete a local tag.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Searching History</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git log <span class="flag">--grep=</span><span class="arg">"keyword"</span></code>
+        <div class="desc">Search commit messages for a keyword.</div>
+      </div>
+      <div class="cmd">
+        <code>git log <span class="flag">-S</span> <span class="arg">"function_name"</span></code>
+        <div class="desc">Find commits that added or removed a specific string in the code. Useful for tracking when something changed.</div>
+      </div>
+      <div class="cmd">
+        <code>git log <span class="flag">-- </span><span class="arg">&lt;file&gt;</span></code>
+        <div class="desc">Show the commit history for a single file.</div>
+      </div>
+      <div class="cmd">
+        <code>git bisect start</code>
+        <div class="desc">Start a binary search through commit history to find when a bug was introduced. Mark commits as <code>good</code> or <code>bad</code> to narrow it down.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Submodules</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git submodule add <span class="arg">&lt;url&gt;</span></code>
+        <div class="desc">Embed another Git repo inside your repo as a submodule. The submodule tracks a specific commit of the dependency.</div>
+      </div>
+      <div class="cmd">
+        <code>git submodule update <span class="flag">--init</span></code>
+        <div class="desc">Initialize and fetch submodule content after cloning a repo that has submodules.</div>
+      </div>
+      <div class="cmd">
+        <code>git clone <span class="flag">--recurse-submodules</span> <span class="arg">&lt;url&gt;</span></code>
+        <div class="desc">Clone a repo and automatically initialize all its submodules.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Useful Aliases</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <code>git config <span class="flag">--global</span> alias.st status</code>
+        <div class="desc">Create <code>git st</code> as a shortcut for <code>git status</code>.</div>
+      </div>
+      <div class="cmd">
+        <code>git config <span class="flag">--global</span> alias.co switch</code>
+        <div class="desc">Create <code>git co</code> as a shortcut for <code>git switch</code>.</div>
+      </div>
+      <div class="cmd">
+        <code>git config <span class="flag">--global</span> alias.lg <span class="arg">"log --oneline --graph"</span></code>
+        <div class="desc">Create <code>git lg</code> for a compact, visual log. One of the most useful aliases.</div>
+      </div>
+      <div class="cmd">
+        <code>git config <span class="flag">--global</span> alias.undo <span class="arg">"reset --soft HEAD~1"</span></code>
+        <div class="desc">Create <code>git undo</code> to quickly undo the last commit while keeping your changes staged.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TIPS -->
+<div class="section-label">Tips</div>
+<div class="grid">
+  <div class="card" style="border-color:#3a3a1a">
+    <div class="card-header" style="border-color:#3a3a1a"><div class="dot" style="background:var(--accent)"></div><h2>Commit Messages</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <div class="desc">Write commit messages in imperative mood: "Add login form" not "Added login form". Keep the subject line under 72 characters. Reference issue numbers when relevant: "Fix null pointer in parser (#42)".</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#3a3a1a">
+    <div class="card-header" style="border-color:#3a3a1a"><div class="dot" style="background:var(--accent)"></div><h2>Reset vs Revert</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <div class="desc">Use <code>git revert</code> on branches others use. It adds a new commit. Use <code>git reset</code> only on local branches you have not pushed yet. Reset rewrites history.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#3a3a1a">
+    <div class="card-header" style="border-color:#3a3a1a"><div class="dot" style="background:var(--accent)"></div><h2>Fetch vs Pull</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <div class="desc"><code>git fetch</code> downloads remote changes but does not touch your working files. Use it to see what changed before merging. <code>git pull</code> fetches and merges in one step.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:#3a3a1a">
+    <div class="card-header" style="border-color:#3a3a1a"><div class="dot" style="background:var(--accent)"></div><h2>HEAD Explained</h2></div>
+    <div class="card-body">
+      <div class="cmd">
+        <div class="desc"><code>HEAD</code> is a pointer to your current position in the repo. Usually it points to the tip of your current branch. <code>HEAD~1</code> means one commit before HEAD. <code>HEAD~2</code> means two commits back.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
